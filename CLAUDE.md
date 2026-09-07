@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A single-notebook academic microproject (MAIA, Machine Learning No Supervisado, Módulo 5). The
 assignment brief is [Microproyecto1.pdf](Microproyecto1.pdf); all work goes into
-[Microproyecto.ipynb](Microproyecto.ipynb). Not a git repository.
+[Microproyecto.ipynb](Microproyecto.ipynb). Tracked in git (branch `main`).
 
 **Working language is Spanish** — the brief, the notebook prose, and the required justifications are
 all in Spanish. Write markdown cells and explanatory comments in Spanish.
@@ -41,23 +41,35 @@ justifications, not just the code.
 ## Environment
 
 The interpreter that has the project's packages is the conda env **`ml_entorno`**:
-`C:\Users\USER\anaconda3\envs\ml_entorno\python.exe` (Python 3.11.14). Installed there: numpy 2.0.2,
-pandas 2.3.3, scikit-learn 1.8.0, scipy 1.17.0, matplotlib 3.10.8, Pillow 12.1.1, joblib 1.5.3,
-nbconvert 7.16.6, nbclient 0.10.2, ipykernel 6.29.3. **No** seaborn, opencv (`cv2`), scikit-image
-or `sklearn_extra`.
+`C:\Users\Usuario\anaconda3\envs\ml_entorno\python.exe` (Python 3.11.16). Installed there: numpy 2.4.6,
+pandas 3.0.5, scikit-learn 1.9.0, scipy 1.17.1, matplotlib 3.11.0, Pillow 12.3.0, joblib 1.5.3,
+nbconvert 7.17.1, nbclient 0.11.0, ipykernel 7.3.0, jupyter 1.1.1, notebook 7.0.6, plus seaborn
+0.13.2, scikit-image 0.26.0 and opencv (`cv2`) 4.14.0. **No** `sklearn_extra`.
 
-Do not call a bare `python` — on PATH it resolves to the Microsoft Store stub, which has nothing
-installed. Use the full path above. The registered `python3` kernelspec launches `python` from PATH,
-so put the env first when running the notebook headlessly:
+The env is registered as the Jupyter kernel **`ml_entorno`** (display name "Python (ml_entorno)") in
+`C:\Users\Usuario\AppData\Roaming\jupyter\kernels\ml_entorno`; its `kernel.json` holds the absolute
+interpreter path, so it resolves from any working directory. To recreate it from scratch:
 
 ```bash
-export PATH="/c/Users/USER/anaconda3/envs/ml_entorno:/c/Users/USER/anaconda3/envs/ml_entorno/Scripts:$PATH"
-"/c/Users/USER/anaconda3/envs/ml_entorno/python.exe" -m jupyter execute Microproyecto.ipynb --inplace
-"/c/Users/USER/anaconda3/envs/ml_entorno/python.exe" -m nbconvert --to html Microproyecto.ipynb
+"/c/Users/Usuario/anaconda3/Scripts/conda.exe" create -y -n ml_entorno python=3.11 numpy pandas \
+  scikit-learn scipy matplotlib pillow joblib ipykernel jupyter nbconvert nbclient seaborn \
+  scikit-image opencv
+"/c/Users/Usuario/anaconda3/envs/ml_entorno/python.exe" -m ipykernel install --user \
+  --name ml_entorno --display-name "Python (ml_entorno)"
 ```
 
-A full run of the notebook takes about 70 seconds. Anaconda's base env (Python 3.12) also exists but
-has older versions (numpy 1.26, scikit-learn 1.3) — don't use it.
+Do not call a bare `python` — on PATH it resolves to a separate `C:\Python314` install that has none
+of these packages. Use the full path above. The other registered kernelspec, `python3`, points at
+Anaconda's base env (Python 3.13), not at this one, so pass `--kernel_name=ml_entorno` when running
+the notebook headlessly:
+
+```bash
+"/c/Users/Usuario/anaconda3/envs/ml_entorno/python.exe" -m jupyter execute --kernel_name=ml_entorno Microproyecto.ipynb --inplace
+"/c/Users/Usuario/anaconda3/envs/ml_entorno/python.exe" -m nbconvert --to html Microproyecto.ipynb
+```
+
+A full run of the notebook takes about 70 seconds. Anaconda's base env also carries the scientific
+stack, but keep the work on `ml_entorno` so the pinned Python 3.11 stays reproducible.
 
 ## Estilo de entrega del curso
 
