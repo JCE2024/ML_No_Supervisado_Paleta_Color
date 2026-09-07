@@ -64,11 +64,23 @@ Anaconda's base env (Python 3.13), not at this one, so pass `--kernel_name=ml_en
 the notebook headlessly:
 
 ```bash
+export PYTHONUTF8=1   # imprescindible: ver la advertencia de abajo
 "/c/Users/Usuario/anaconda3/envs/ml_entorno/python.exe" -m jupyter execute --kernel_name=ml_entorno Microproyecto.ipynb --inplace
 "/c/Users/Usuario/anaconda3/envs/ml_entorno/python.exe" -m nbconvert --to html Microproyecto.ipynb
 ```
 
-A full run of the notebook takes about 70 seconds. Anaconda's base env also carries the scientific
+**Always export `PYTHONUTF8=1` before `--inplace`.** Without it, Python falls back to the cp1252
+locale on this machine: `jupyter execute --inplace` reads the UTF-8 `.ipynb` as cp1252 and writes it
+back as UTF-8, so every accented character in the markdown gets double-encoded (`Preparación` →
+`PreparaciÃ³n`). The damage is silent, it is invisible in the notebook's outputs, and it compounds —
+each `--inplace` round trip adds another layer. If it happens, the text is recoverable by applying
+`s.encode('cp1252').decode('utf-8')` once per round trip that was run; verify the result against
+`git show HEAD:Microproyecto.ipynb` before saving.
+
+The notebook is usually open in VS Code, whose in-memory buffer will overwrite edits made from the
+terminal when it next saves. Close it (or reload it from disk) before editing the file directly.
+
+A full run of the notebook takes about 110 seconds. Anaconda's base env also carries the scientific
 stack, but keep the work on `ml_entorno` so the pinned Python 3.11 stays reproducible.
 
 ## Estilo de entrega del curso
